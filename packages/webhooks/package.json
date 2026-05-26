@@ -1,6 +1,7 @@
 {
   "name": "@openpay/webhooks",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "Webhook utilities for OpenPay SDK (replay protection, routing)",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -1,6 +1,7 @@
 {
   "name": "@openpay/provider-mock",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "Deterministic in-memory provider for testing and demos",
   "type": "module",
   "main": "./dist/index.cjs",

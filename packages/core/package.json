@@ -1,6 +1,7 @@
 {
   "name": "@openpay/core",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "Core abstractions and interfaces for OpenPay SDK",
   "type": "module",
   "main": "./dist/index.cjs",

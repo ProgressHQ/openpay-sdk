@@ -1,6 +1,7 @@
 {
   "name": "@openpay/provider-taler",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "GNU Taler provider for OpenPay SDK",
   "type": "module",
   "main": "./dist/index.cjs",

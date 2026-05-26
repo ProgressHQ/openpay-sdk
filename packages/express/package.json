@@ -1,6 +1,7 @@
 {
   "name": "@openpay/express",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "Express middleware for OpenPay SDK (webhooks, entitlement guards)",
   "type": "module",
   "main": "./dist/index.cjs",

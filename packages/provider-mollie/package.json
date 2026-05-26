@@ -1,6 +1,7 @@
 {
   "name": "@openpay/provider-mollie",
   "version": "0.1.0",
+  "license": "MPL-2.0",
   "description": "Mollie provider for OpenPay SDK",
   "type": "module",
   "main": "./dist/index.cjs",
