@@ -1,0 +1,35 @@
+{
+  "name": "@openpay/provider-mollie",
+  "version": "0.1.0",
+  "description": "Mollie provider for OpenPay SDK",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@openpay/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@mollie/api-client": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@mollie/api-client": { "optional": false }
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.0"
+  }
+}
