@@ -93,10 +93,14 @@ export class PayPalProvider implements PaymentProvider {
 
   async createPayment(input: CreatePaymentInput): Promise<PaymentSession> {
     const decimal = fromMinorUnits(input.amount.amount, input.amount.currency);
+    const headers = input.idempotencyKey
+      ? { "PayPal-Request-Id": input.idempotencyKey }
+      : undefined;
     const order = await this.fetchJSON<{ id: string; status: string; links: Array<{ rel: string; href: string }> }>(
       "/v2/checkout/orders",
       {
         method: "POST",
+        headers,
         body: JSON.stringify({
           intent: "CAPTURE",
           purchase_units: [

@@ -375,6 +375,30 @@ Each package is a self-contained TypeScript module with its own `package.json`, 
 - **Replay protection** — duplicate webhook deliveries are detected and silently acknowledged before business logic runs.
 - **Error hierarchy** — all errors are `OpenPayError` with a machine-readable `code`. No string-matching.
 
+### Idempotency and retry safety
+
+Use a stable, caller-generated `idempotencyKey` for every logical checkout attempt:
+
+```ts
+await client.createPayment({
+  amount: { amount: 1299, currency: "USD" },
+  description: "Pro plan",
+  idempotencyKey: `checkout:${userId}:${cartId}`,
+});
+```
+
+Provider behavior:
+
+| Provider | `createPayment` retry behavior |
+| --- | --- |
+| Mock | Reuses the first stored session for the same `idempotencyKey`. |
+| Taler | Maps `idempotencyKey` to the merchant `order_id`. |
+| Stripe | Passes the key as the native Stripe idempotency option in the implementation template. |
+| PayPal | Sends the key as the native `PayPal-Request-Id` header on Orders API POSTs. |
+| Mollie | Provider implementation is still a template; add native/fallback idempotency before production use. |
+
+For webhooks, pair provider signature verification with `ReplayProtection` from `@openpay/webhooks` before granting entitlements. Use the provider event ID when available; otherwise use a stable composite key such as `${provider}:${event.paymentId}:${event.type}`.
+
 ---
 
 ## Security
