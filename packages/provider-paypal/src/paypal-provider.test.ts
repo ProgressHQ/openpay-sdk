@@ -103,4 +103,40 @@ describe("PayPalProvider.createPayment idempotency", () => {
       expect.objectContaining({ "PayPal-Request-Id": "checkout-user-123-pro" }),
     ]);
   });
+
+  it("reuses PayPal-Request-Id when the caller retries after a non-2xx response", async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ access_token: "token_123" }))
+      .mockResolvedValueOnce(jsonResponse({
+        name: "INTERNAL_SERVER_ERROR",
+        message: "Temporary PayPal failure",
+      }, 503))
+      .mockResolvedValueOnce(jsonResponse({
+        id: "ORDER-RETRY",
+        status: "CREATED",
+        links: [{ rel: "approve", href: "https://paypal.test/checkout/retry" }],
+      }));
+    const provider = makeProvider();
+    const input = {
+      amount: { amount: 1299, currency: "USD" },
+      description: "Pro plan",
+      idempotencyKey: "checkout-user-123-pro",
+    };
+
+    await expect(provider.createPayment(input)).rejects.toMatchObject({
+      code: "PROVIDER_ERROR",
+      message: expect.stringContaining("PayPal responded 503"),
+    });
+    const session = await provider.createPayment(input);
+
+    expect(session.paymentId).toBe("ORDER-RETRY");
+    const orderRequests = fetchMock.mock.calls.filter(([url]) => (
+      url === "https://api-m.sandbox.paypal.com/v2/checkout/orders"
+    ));
+    expect(orderRequests).toHaveLength(2);
+    expect(orderRequests.map(([, init]) => (init as RequestInit).headers)).toEqual([
+      expect.objectContaining({ "PayPal-Request-Id": "checkout-user-123-pro" }),
+      expect.objectContaining({ "PayPal-Request-Id": "checkout-user-123-pro" }),
+    ]);
+  });
 });
